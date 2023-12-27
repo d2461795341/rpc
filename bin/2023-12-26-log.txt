@@ -1,0 +1,5 @@
+17:27:47=>first log message!
+17:27:47=>/home/dkj/Code/rpc/example/callee/friendservice.cc:main:45
+23:48:3=>[error]first log message!
+23:48:3=>[error]/home/dkj/Code/rpc/example/callee/friendservice.cc:main:45
+23:48:3=>[info]method_name: 0‹¾—ÿ

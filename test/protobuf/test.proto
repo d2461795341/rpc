@@ -1,0 +1,56 @@
+//序列化与反序列化
+//protoc test.proto --cpp_out=./
+syntax = "proto3"; //声明protobuf的版本
+package fixbug; //声明代码所在的包（对于c++来说是namespace）
+
+//定义下面选项，表示生成service服务类和rpc方法描述，默认不生成
+option cc_generic_services =true;
+
+//创建以protobuf中message为基类的类
+message ResultCode{
+    int32 errorcode=1;  //错误码
+    bytes errormsg=2;  //错误消息
+}
+
+//数据 列表 映射表
+
+// 定义登录请求消息类型
+message LoginRequest{
+    bytes name=1;
+    bytes pwd=2; 
+}
+
+//定义登录响应消息类型
+message LoginResponse{
+    ResultCode result=1;
+    ResultCode another_result=2;
+    bool success=3; //是否登录成功
+}
+
+message User{
+    bytes name=1;
+    uint32 age=2;
+    enum Sex{
+        MAN=0;
+        WOMAN=1;
+    }
+    Sex sex=3;
+}
+message GetFriendListRequest{
+    uint32 userid=1;
+} 
+message GetFriendListResponse{
+    ResultCode result=1;
+    repeated User friend_list =2; //定义了一个列表类型
+}
+
+
+//创建了以protobuf中service为基类UserServiceRpc类 有默认构造函数
+//创建了以UserServiceRpc为基类的UserServiceRpc_Stub类  无默认构造函数，需要传入channel, channel中通过CallMethod来调用函数，而channel中的CallMethod为纯虚函数，
+//我们需要重写我们需要构造自己的MyRpcChannel来重写CallMethod从而使得UserServiceRpc_Stub调用我们写的CallMethod
+//UserServiceRpc  rpc服务的提供者
+//UserServiceRpc_Stub  rpc服务的消费者
+service UserServiceRpc{
+    rpc Login(LoginRequest) returns(LoginResponse);
+    rpc GetFriendLists(GetFriendListRequest) returns(GetFriendListResponse);
+}
